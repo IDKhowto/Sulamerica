@@ -1,4 +1,4 @@
-create or replace table `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_EXP_INTER` AS 
+create or replace table `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.ACOLHER_ONCO` AS 
 WITH T_VIDA AS (SELECT 
 COD_CARTEIRINHA_ORIGINAL , 
 COD_BENEFICIARIO_CHAVE 
