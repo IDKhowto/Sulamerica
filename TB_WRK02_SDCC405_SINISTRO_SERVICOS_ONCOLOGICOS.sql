@@ -48,28 +48,28 @@ T3 AS (
 FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_WRK01_SDCC405_SINISTRO_SERVICOS_ONCOLOGICOS` A
 INNER JOIN T2 B
 ON A.COD_CARTEIRINHA_BENEFICIARIO = B.COD_CARTEIRINHA
-),
+)
+--alteração solicitada 14/08/2020
+
+select * from T3
 
 
--- TB_405 AS (SELECT 
---   A.*,
---   B.DE_PARA
---   FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_WRK00_SDCC405_SINISTRO_SERVICOS_ONCOLOGICOS` A
---   LEFT JOIN T3 B
---   ON  A.COD_CARTEIRINHA_BENEFICIARIO = B.COD_CARTEIRINHA_BENEFICIARIO
---   AND A.COD_SERVICO = B.COD_SERVICO)
 --   select count(*) from tb_405, 
 
-  NUM_VPP2 
-  as(
-  SELECT DISTINCT
-  NUM_INTERNACAO 
-  FROM T3
-  WHERE COD_SERVICO IN (SELECT 
-                COD_SERVICO 
-                    FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`) and DE_PARA is not null)
-SELECT 
+--- definição das vpps com os servicos mapeados comentado 14/08/2020
 
-* FROM T3
-WHERE NUM_INTERNACAO   IN (SELECT NUM_INTERNACAO   FROM NUM_VPP2)
- 
+--   NUM_VPP2 
+--   as(
+--   SELECT DISTINCT
+--   NUM_INTERNACAO 
+--   FROM T3
+--   WHERE COD_SERVICO IN (SELECT 
+--                 COD_SERVICO 
+--                     FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`) and DE_PARA is not null)
+
+--seleção das vpps que contém aqueles servicos mapeados comentado 14/08/2020
+-- SELECT 
+
+-- * FROM T3
+-- WHERE NUM_INTERNACAO   IN (SELECT NUM_INTERNACAO   FROM NUM_VPP2)
+--  
