@@ -175,7 +175,7 @@ SELECT
                  A.IDC_TIPO_SOLICITACAO,
                  CASE A.IDC_TIPO_SOLICITACAO
                     WHEN 0
-                    THEN 'SP SADT',
+                    THEN 'SP SADT'
 
                     WHEN 1
                     THEN 'INTERNACAO'
