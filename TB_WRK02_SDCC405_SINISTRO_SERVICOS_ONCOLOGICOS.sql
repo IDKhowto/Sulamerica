@@ -51,25 +51,29 @@ ON A.COD_CARTEIRINHA_BENEFICIARIO = B.COD_CARTEIRINHA
 )
 --alteração solicitada 14/08/2020
 
-select * from T3
+-- select * from T3
 
 
 --   select count(*) from tb_405, 
 
 --- definição das vpps com os servicos mapeados comentado 14/08/2020
+--- definição de serviços com Lucas e Sergio 20/08/2020
 
---   NUM_VPP2 
---   as(
---   SELECT DISTINCT
---   NUM_INTERNACAO 
---   FROM T3
---   WHERE COD_SERVICO IN (SELECT 
---                 COD_SERVICO 
---                     FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`) and DE_PARA is not null)
+  NUM_VPP2 
+  as(
+  SELECT DISTINCT
+  NUM_INTERNACAO 
+  FROM T3
+  WHERE COD_SERVICO IN (SELECT 
+                COD_SERVICOS
+                    FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`))
 
---seleção das vpps que contém aqueles servicos mapeados comentado 14/08/2020
--- SELECT 
+-- seleção das vpps que contém aqueles servicos mapeados comentado 14/08/2020
+-- nova seleção de servicos feita por Lucas e Sergio 20/08/2020
 
--- * FROM T3
--- WHERE NUM_INTERNACAO   IN (SELECT NUM_INTERNACAO   FROM NUM_VPP2)
---  
+
+SELECT 
+
+* FROM T3
+WHERE NUM_INTERNACAO   IN (SELECT NUM_INTERNACAO   FROM NUM_VPP2)
+ 
