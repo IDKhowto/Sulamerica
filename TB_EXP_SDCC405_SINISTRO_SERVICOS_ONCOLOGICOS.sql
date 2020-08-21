@@ -89,133 +89,133 @@ SELECT
        FROM TB_405
 GROUP BY 1,2)
        GROUP BY 1,2,3
-),
-
+)
+-- ALTERAÇÃO PARA RETIRAR TUDO DIFERENTE DE QUIMIO, RADIO, PET E BIOPSIA
 --QTD INTERNACAO ELETIVA E CUSTO
 
-TB_INTER_ELET AS (
+-- TB_INTER_ELET AS (
 
-       SELECT
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-    QTD_INTER_ELET,
-       safe_divide(SUM(VLR_INTER_ELET),SUM(QTD_INTER_ELET)) MED_INTER_ELET
-       FROM (
+--        SELECT
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--     QTD_INTER_ELET,
+--        safe_divide(SUM(VLR_INTER_ELET),SUM(QTD_INTER_ELET)) MED_INTER_ELET
+--        FROM (
 
-SELECT 
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-       SUM(CASE 
-           WHEN DE_PARA IN ('INTERNACAO_ELETIVA') THEN 1 ELSE 0 
-                     END) QTD_INTER_ELET,
-       SUM(CASE
-              WHEN DE_PARA IN ('INTERNACAO_ELETIVA') THEN VLR_PAGO_SERVICO ELSE 0 
-                            END) VLR_INTER_ELET
-       FROM TB_405
-GROUP BY 1,2)
-       GROUP BY 1,2,3
-),
+-- SELECT 
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--        SUM(CASE 
+--            WHEN DE_PARA IN ('INTERNACAO_ELETIVA') THEN 1 ELSE 0 
+--                      END) QTD_INTER_ELET,
+--        SUM(CASE
+--               WHEN DE_PARA IN ('INTERNACAO_ELETIVA') THEN VLR_PAGO_SERVICO ELSE 0 
+--                             END) VLR_INTER_ELET
+--        FROM TB_405
+-- GROUP BY 1,2)
+--        GROUP BY 1,2,3
+-- ),
 
---QTD_INTERNACAO CLINICA E CUSTO
-TB_INTER_CLIN AS
-(
-       SELECT
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-    QTD_INTER_CLIN,
-       safe_divide(SUM(VLR_INTER_CLIN),SUM(QTD_INTER_CLIN)) MED_INTER_CLIN
-       FROM (
+-- --QTD_INTERNACAO CLINICA E CUSTO
+-- TB_INTER_CLIN AS
+-- (
+--        SELECT
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--     QTD_INTER_CLIN,
+--        safe_divide(SUM(VLR_INTER_CLIN),SUM(QTD_INTER_CLIN)) MED_INTER_CLIN
+--        FROM (
 
-SELECT 
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-       SUM(CASE 
-           WHEN DE_PARA IN ('INTERNACAO_CLINICA') THEN 1 ELSE 0 
-                     END) QTD_INTER_CLIN,
-       SUM(CASE
-              WHEN DE_PARA IN ('INTERNACAO_CLINICA') THEN VLR_PAGO_SERVICO ELSE 0 
-                            END) VLR_INTER_CLIN
-       FROM TB_405
-GROUP BY 1,2)
-       GROUP BY 1,2,3
-),
+-- SELECT 
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--        SUM(CASE 
+--            WHEN DE_PARA IN ('INTERNACAO_CLINICA') THEN 1 ELSE 0 
+--                      END) QTD_INTER_CLIN,
+--        SUM(CASE
+--               WHEN DE_PARA IN ('INTERNACAO_CLINICA') THEN VLR_PAGO_SERVICO ELSE 0 
+--                             END) VLR_INTER_CLIN
+--        FROM TB_405
+-- GROUP BY 1,2)
+--        GROUP BY 1,2,3
+-- ),
 
---QTD INTERNACAO UTI E CUSTO
+-- --QTD INTERNACAO UTI E CUSTO
 
-TB_INTER_UTI AS
-(
-       SELECT
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-    QTD_INTER_UTI,
-       safe_divide(SUM(VLR_INTER_UTI),SUM(QTD_INTER_UTI)) MED_INTER_UTI
-       FROM (
+-- TB_INTER_UTI AS
+-- (
+--        SELECT
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--     QTD_INTER_UTI,
+--        safe_divide(SUM(VLR_INTER_UTI),SUM(QTD_INTER_UTI)) MED_INTER_UTI
+--        FROM (
 
-SELECT 
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-       SUM(CASE 
-           WHEN DE_PARA IN ('INTERNACAO_UTI') THEN 1 ELSE 0 
-                     END) QTD_INTER_UTI,
-       SUM(CASE
-              WHEN DE_PARA IN ('INTERNACAO_UTI') THEN VLR_PAGO_SERVICO ELSE 0 
-                            END) VLR_INTER_UTI
-       FROM TB_405
-GROUP BY 1,2)
-       GROUP BY 1,2,3
-),
+-- SELECT 
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--        SUM(CASE 
+--            WHEN DE_PARA IN ('INTERNACAO_UTI') THEN 1 ELSE 0 
+--                      END) QTD_INTER_UTI,
+--        SUM(CASE
+--               WHEN DE_PARA IN ('INTERNACAO_UTI') THEN VLR_PAGO_SERVICO ELSE 0 
+--                             END) VLR_INTER_UTI
+--        FROM TB_405
+-- GROUP BY 1,2)
+--        GROUP BY 1,2,3
+-- ),
 
---PASSAGEM PS E CUSTO
+-- --PASSAGEM PS E CUSTO
 
-TB_PASSAGEM_PS AS 
-(
+-- TB_PASSAGEM_PS AS 
+-- (
 
-       SELECT
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-    QTD_PS,
-       safe_divide(SUM(VLR_PS),SUM(QTD_PS)) MED_PS
-       FROM (
+--        SELECT
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--     QTD_PS,
+--        safe_divide(SUM(VLR_PS),SUM(QTD_PS)) MED_PS
+--        FROM (
 
-SELECT 
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-       SUM(CASE 
-           WHEN DE_PARA IN ('PASSAGEM_PS') THEN 1 ELSE 0 
-                     END) QTD_PS,
-       SUM(CASE
-              WHEN DE_PARA IN ('PASSAGEM_PS') THEN VLR_PAGO_SERVICO ELSE 0 
-                            END) VLR_PS
-       FROM TB_405
-GROUP BY 1,2)
-       GROUP BY 1,2,3
-),
+-- SELECT 
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--        SUM(CASE 
+--            WHEN DE_PARA IN ('PASSAGEM_PS') THEN 1 ELSE 0 
+--                      END) QTD_PS,
+--        SUM(CASE
+--               WHEN DE_PARA IN ('PASSAGEM_PS') THEN VLR_PAGO_SERVICO ELSE 0 
+--                             END) VLR_PS
+--        FROM TB_405
+-- GROUP BY 1,2)
+--        GROUP BY 1,2,3
+-- ),
 
---internacao cirurgica e custo
-TB_INTER_CIRUR AS 
-(
-       SELECT
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-    QTD_INTER_CIRUR,
-       safe_divide(SUM(VLR_INTER_CIRUR),SUM(QTD_INTER_CIRUR)) MED_INTER_CIRUR
-       FROM (
+-- --internacao cirurgica e custo
+-- TB_INTER_CIRUR AS 
+-- (
+--        SELECT
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--     QTD_INTER_CIRUR,
+--        safe_divide(SUM(VLR_INTER_CIRUR),SUM(QTD_INTER_CIRUR)) MED_INTER_CIRUR
+--        FROM (
 
-SELECT 
-       COD_CARTEIRINHA_BENEFICIARIO,
-       DE_PARA,
-       SUM(CASE 
-           WHEN DE_PARA IN ('INTERNACAO_CIRURGICA') THEN 1 ELSE 0 
-                     END) QTD_INTER_CIRUR,
-       SUM(CASE
-              WHEN DE_PARA IN ('INTERNACAO_CIRURGICA') THEN VLR_PAGO_SERVICO ELSE 0 
-                            END) VLR_INTER_CIRUR
-       FROM TB_405
-GROUP BY 1,2)
-       GROUP BY 1,2,3),
+-- SELECT 
+--        COD_CARTEIRINHA_BENEFICIARIO,
+--        DE_PARA,
+--        SUM(CASE 
+--            WHEN DE_PARA IN ('INTERNACAO_CIRURGICA') THEN 1 ELSE 0 
+--                      END) QTD_INTER_CIRUR,
+--        SUM(CASE
+--               WHEN DE_PARA IN ('INTERNACAO_CIRURGICA') THEN VLR_PAGO_SERVICO ELSE 0 
+--                             END) VLR_INTER_CIRUR
+--        FROM TB_405
+-- GROUP BY 1,2)
+--        GROUP BY 1,2,3)
 
 
-TB_01 AS (
+,TB_01 AS (
 
 
 SELECT distinct 
@@ -226,17 +226,17 @@ SELECT distinct
        D.QTD_QUIMIO,
        D.MED_QUIMIO,
        E.QTD_RADIO,
-       E.MED_RADIO,
-       F.QTD_INTER_ELET,
-       F.MED_INTER_ELET,
-       G.QTD_INTER_CLIN,
-       G.MED_INTER_CLIN,
-       H.QTD_INTER_UTI,
-       H.MED_INTER_UTI,
-       I.QTD_PS,
-       I.MED_PS,
-       J.QTD_INTER_CIRUR,
-       J.MED_INTER_CIRUR
+       E.MED_RADIO
+       -- F.QTD_INTER_ELET,
+       -- F.MED_INTER_ELET,
+       -- G.QTD_INTER_CLIN,
+       -- G.MED_INTER_CLIN,
+       -- H.QTD_INTER_UTI,
+       -- H.MED_INTER_UTI,
+       -- I.QTD_PS,
+       -- I.MED_PS,
+       -- J.QTD_INTER_CIRUR,
+       -- J.MED_INTER_CIRUR
 
 
 
@@ -266,30 +266,30 @@ SELECT distinct
        AND A.DE_PARA = E.DE_PARA
        AND A.R_RNK = 1
 
-       LEFT JOIN TB_INTER_ELET F
-       ON  A.COD_CARTEIRINHA_BENEFICIARIO = F.COD_CARTEIRINHA_BENEFICIARIO
-       AND A.DE_PARA = F.DE_PARA
-       AND A.R_RNK = 1
+       -- LEFT JOIN TB_INTER_ELET F
+       -- ON  A.COD_CARTEIRINHA_BENEFICIARIO = F.COD_CARTEIRINHA_BENEFICIARIO
+       -- AND A.DE_PARA = F.DE_PARA
+       -- AND A.R_RNK = 1
 
-       LEFT JOIN TB_INTER_CLIN G
-       ON  A.COD_CARTEIRINHA_BENEFICIARIO = G.COD_CARTEIRINHA_BENEFICIARIO
-       AND A.DE_PARA = G.DE_PARA
-       AND A.R_RNK = 1
+       -- LEFT JOIN TB_INTER_CLIN G
+       -- ON  A.COD_CARTEIRINHA_BENEFICIARIO = G.COD_CARTEIRINHA_BENEFICIARIO
+       -- AND A.DE_PARA = G.DE_PARA
+       -- AND A.R_RNK = 1
 
-       LEFT JOIN TB_INTER_UTI H
-       ON  A.COD_CARTEIRINHA_BENEFICIARIO = H.COD_CARTEIRINHA_BENEFICIARIO
-       AND A.DE_PARA = H.DE_PARA
-       AND A.R_RNK = 1
+       -- LEFT JOIN TB_INTER_UTI H
+       -- ON  A.COD_CARTEIRINHA_BENEFICIARIO = H.COD_CARTEIRINHA_BENEFICIARIO
+       -- AND A.DE_PARA = H.DE_PARA
+       -- AND A.R_RNK = 1
 
-       LEFT JOIN TB_PASSAGEM_PS I
-       ON  A.COD_CARTEIRINHA_BENEFICIARIO = I.COD_CARTEIRINHA_BENEFICIARIO
-       AND A.DE_PARA = I.DE_PARA
-       AND A.R_RNK = 1
+       -- LEFT JOIN TB_PASSAGEM_PS I
+       -- ON  A.COD_CARTEIRINHA_BENEFICIARIO = I.COD_CARTEIRINHA_BENEFICIARIO
+       -- AND A.DE_PARA = I.DE_PARA
+       -- AND A.R_RNK = 1
 
-       LEFT JOIN TB_INTER_CIRUR J
-       ON  A.COD_CARTEIRINHA_BENEFICIARIO = J.COD_CARTEIRINHA_BENEFICIARIO
-       AND A.DE_PARA = J.DE_PARA
-       AND A.R_RNK = 1
+       -- LEFT JOIN TB_INTER_CIRUR J
+       -- ON  A.COD_CARTEIRINHA_BENEFICIARIO = J.COD_CARTEIRINHA_BENEFICIARIO
+       -- AND A.DE_PARA = J.DE_PARA
+       -- AND A.R_RNK = 1
        ),
 
 
@@ -301,17 +301,17 @@ SELECT distinct
        B.QTD_QUIMIO,
        B.MED_QUIMIO,
        B.QTD_RADIO,
-       B.MED_RADIO,
-       B.QTD_INTER_ELET,
-       B.MED_INTER_ELET,
-       B.QTD_INTER_CLIN,
-       B.MED_INTER_CLIN,
-       B.QTD_INTER_UTI,
-       B.MED_INTER_UTI,
-       B.QTD_PS,
-       B.MED_PS,
-       B.QTD_INTER_CIRUR,
-       B.MED_INTER_CIRUR
+       B.MED_RADIO
+       -- B.QTD_INTER_ELET,
+       -- B.MED_INTER_ELET,
+       -- B.QTD_INTER_CLIN,
+       -- B.MED_INTER_CLIN,
+       -- B.QTD_INTER_UTI,
+       -- B.MED_INTER_UTI,
+       -- B.QTD_PS,
+       -- B.MED_PS,
+       -- B.QTD_INTER_CIRUR,
+       -- B.MED_INTER_CIRUR
 
   FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_WRK02_SDCC405_SINISTRO_SERVICOS_ONCOLOGICOS` A
   LEFT JOIN TB_01 B
@@ -341,7 +341,7 @@ FROM TB_03 A
 INNER JOIN `self-service-saude.TRU_SAUDE_CONTROLE_PRECO_SINISTRO_PRD.TB_FAT_ITEM_SERVICO_SINISTRO` B
 ON A.COD_ANALITICO_BENEFICIARIO = B.COD_ANALITICO_BENEFICIARIO
 
-WHERE B.COD_SERVICO IN (SELECT COD_SERVICOS
+WHERE B.COD_SERVICO IN (SELECT COD_SERVICO
                                FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`)
                                
 
@@ -491,16 +491,16 @@ SELECT
        A.MED_QUIMIO,
        A.QTD_RADIO,
        A.MED_RADIO,
-       A.QTD_INTER_ELET,
-       A.MED_INTER_ELET,
-       A.QTD_INTER_CLIN,
-       A.MED_INTER_CLIN,
-       A.QTD_INTER_UTI,
-       A.MED_INTER_UTI,
-       A.QTD_PS,
-       A.MED_PS,
-       A.QTD_INTER_CIRUR,
-       A.MED_INTER_CIRUR,
+       -- A.QTD_INTER_ELET,
+       -- A.MED_INTER_ELET,
+       -- A.QTD_INTER_CLIN,
+       -- A.MED_INTER_CLIN,
+       -- A.QTD_INTER_UTI,
+       -- A.MED_INTER_UTI,
+       -- A.QTD_PS,
+       -- A.MED_PS,
+       -- A.QTD_INTER_CIRUR,
+       -- A.MED_INTER_CIRUR,
        A.DAT_MIN_EXECUCAO_SINISTRO
 
 
