@@ -59,13 +59,13 @@ ON A.COD_CARTEIRINHA_BENEFICIARIO = B.COD_CARTEIRINHA
 --- definição das vpps com os servicos mapeados comentado 14/08/2020
 --- definição de serviços com Lucas e Sergio 20/08/2020
 
-  NUM_VPP2 
+ , NUM_VPP2 
   as(
   SELECT DISTINCT
   NUM_INTERNACAO 
   FROM T3
   WHERE COD_SERVICO IN (SELECT 
-                COD_SERVICOS
+                COD_SERVICO
                     FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_COD_SERVICOS`))
 
 -- seleção das vpps que contém aqueles servicos mapeados comentado 14/08/2020
