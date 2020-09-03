@@ -31,6 +31,8 @@ WITH T_SOLIC_VPP AS
                    NUM_CPF,
                    COD_PRODUTO,
                    DSC_PRODUTO,
+                   DSC_SEXO,
+                   EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM DAT_NASCIMENTO) NUM_IDADE,
                    COD_PLANO,
                    NME_PLANO,
                    DAT_EXCLUSAO_OPERACIONAL,
@@ -430,6 +432,8 @@ SELECT
                  BENEF.DSC_PRODUTO,
                  BENEF.COD_PLANO, 
                  BENEF.NME_PLANO,
+                 BENEF.DSC_SEXO,
+                 BENEF.NUM_IDADE,
                  UF_BENEF.NME_MUNICIPIO_LOCAL,
                  UF_BENEF.SIG_UF_LOCAL,
                  UF_BENEF.NUM_CEP_COMPLETO_TITULAR NUM_CEP_BENEF,
@@ -677,4 +681,4 @@ ON A.COD_PRESTADOR = PREST.COD_PRESTADOR)
 SELECT 
 *
  FROM CTE 
-where NUM_VPP in (SELECT DISTINCT NUM_VPP FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_EXP_SDCC405_SINISTRO_SERVICOS_ONCOLOGICOS`)
+-- where NUM_VPP in (SELECT DISTINCT NUM_VPP FROM `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_EXP_SDCC405_SINISTRO_SERVICOS_ONCOLOGICOS`)
