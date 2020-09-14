@@ -1,5 +1,5 @@
 
--- CREATE OR REPLACE TABLE `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_WRK00_SDCC405_VPP` AS
+ CREATE OR REPLACE TABLE `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_WRK00_SDCC405_VPP` AS
 
 
 WITH T_SOLIC_VPP AS
@@ -31,6 +31,7 @@ WITH T_SOLIC_VPP AS
                    NUM_CPF,
                    COD_PRODUTO,
                    DSC_PRODUTO,
+                   COD_SEXO,
                    DSC_SEXO,
                    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM DAT_NASCIMENTO) NUM_IDADE,
                    COD_PLANO,
@@ -432,6 +433,7 @@ SELECT
                  BENEF.DSC_PRODUTO,
                  BENEF.COD_PLANO, 
                  BENEF.NME_PLANO,
+                 BENEF.COD_SEXO,
                  BENEF.DSC_SEXO,
                  BENEF.NUM_IDADE,
                  UF_BENEF.NME_MUNICIPIO_LOCAL,
