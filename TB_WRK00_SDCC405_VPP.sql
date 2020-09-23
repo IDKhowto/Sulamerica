@@ -599,6 +599,7 @@ SELECT
                     ELSE B.DAT_ATENDIMENTO
                        END DAT_ATENDIMENTO,
 
+                 D.DSC_TIPO_QUIMIO,
                  D.COD_DIAG_IMAGEM_ANS,
                  D.DSC_DIAG_IMAGEM,
                  D.DAT_REALIZACAO_CIRURGIA,
