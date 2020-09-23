@@ -143,7 +143,7 @@ FLG_LIMINAR,
 NUM_VPP
 
 FROM `self-service-saude.TRU_SAUDE_CONTROLE_PRECO_SINISTRO_PRD.TB_FAT_ITEM_SERVICO_SINISTRO`
-where flg_liminar in ('S'))
+where flg_liminar in ('S','N'))
 
 
 , cte as(
