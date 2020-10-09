@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_EXP_CLASSES_SINISTRO_ALL_ATUAL` AS(
+CREATE OR REPLACE TABLE `sas-saude-alto-custo-hml.SBX_ALTO_CUSTO.TB_EXP_CLASSES_SINISTRO_ESTUDO_NEURO` AS
 
 
 with t0 as ( SELECT DISTINCT COD_BENEFICIARIO_CHAVE FROM `self-service-saude.VW_CONS_SAU.TB_EXP_CLASSES_SINISTRO_TOP`)
@@ -23,6 +23,45 @@ SELECT COD_TIPO_INTERN
   FROM CTE_TIPINTER
  WHERE RNK = 1
 )
+
+,T_MATMED AS
+    (SELECT * EXCEPT(R_RNK)
+     FROM
+         (SELECT *,
+                 ROW_NUMBER() over(partition BY COD_BENEFICIARIO_CHAVE,
+                                                IDT_DOCUMENTO, 
+                                                COD_ORIGEM, 
+                                                IDT_COMPLEMENTO,
+                                                IDT_SEQ_PAGTO, 
+                                                IDT_ANEXO, 
+                                                IDT_ITEM, 
+                                                IDT_ITEM_MAT_MED) R_RNK
+                              
+          FROM
+              (SELECT CONCAT(cod_pref_empresa,cod_empresa,COD_FAMILIAR_BENEF, cod_rdp) COD_BENEFICIARIO_CHAVE,
+                      IDT_DOCUMENTO,
+                      COD_ORIGEM,
+                      IDT_COMPLEMENTO,
+                      IDT_SEQ_PAGTO,
+                      IDT_ANEXO,
+                      IDT_ITEM,
+                      IDT_ITEM_MAT_MED,
+                      COD_ITEM_MAT_MED,
+                      DSC_ITEM_MAT_MED,
+                      COD_SERVICO,
+                      COD_FAMILIAR_BENEF,
+                      COD_RDP
+                      -- CASE
+                      --     WHEN REGEXP_CONTAINS(CONCAT(COD_PREF_EMPRESA, COD_EMPRESA), r"[A-z]+") IS TRUE THEN '88888'
+                      --     ELSE CONCAT(COD_PREF_EMPRESA,COD_EMPRESA)
+                      -- END AS COD_EMPRESA_1
+               FROM `self-service-saude.SANDBOX_SUSAU.CONTA_DETALHE_MATMED`))
+     WHERE R_RNK = 1)
+
+
+
+
+
 --SELECT * FROM CTE_TIPINTER 
 ,CTE_VIDA AS(
 SELECT DISTINCT 
@@ -39,7 +78,8 @@ SELECT DISTINCT
 )   
 ,CTE_SIN_1 AS(
 SELECT 
-t1.COD_BENEFICIARIO
+       
+       T1.COD_BENEFICIARIO
       ,T1.COD_BENEFICIARIO_CHAVE 
       ,T1.NME_FANTASIA_PRESTADOR 
       ,T1.VAL_SINISTRO
@@ -48,11 +88,13 @@ t1.COD_BENEFICIARIO
       ,T1.FLG_LIMINAR
       ,CAST(T1.COD_TPO_ATEND AS NUMERIC) AS COD_TPO_ATEND
       ,T1.DAT_EXECUCAO
+      ,T1.COD_SERV_PRINCIPAL
       ,T1.COD_SERVICO
       ,T2.DSC_SERVICO_ABREV 
       ,T2.DSC_SERVICO_COMPL AS DSC_SERVICO 
       ,T2.DSC_GRUPO_SERVICO
       ,T2.DSC_SUB_GRUPO_SERV AS DSC_SUBGRUPO 
+      ,T8.DSC_ITEM_MAT_MED
       ,T1.QTD_SERVICO
       ,T3.NME_GRP_ECON_PREST 
       ,T3.NME_MUNICIPIO  
@@ -88,28 +130,70 @@ t1.COD_BENEFICIARIO
     --AND T1.DAT_PAGAMENTO            = T7.DAT_INICIAL 
     AND T1.IDT_DOCUMENTO_AP         = T7.IDT_DOCUMENTO_AP 
 
+  LEFT JOIN T_MATMED T8
+  ON  T1.COD_DOCUMENTO = T8.IDT_DOCUMENTO
+  AND T1.COD_COMPLEMENTO = T8.IDT_COMPLEMENTO
+  AND T1.COD_SEQ_PAGAMENTO = T8.IDT_SEQ_PAGTO
+  AND T1.COD_ANEXO = T8.IDT_ANEXO
+  AND T1.COD_ITEM = T8.IDT_ITEM
+  AND T1.COD_SERVICO = T8.COD_SERVICO
+  AND T1.COD_BENEFICIARIO_CHAVE = T8.COD_BENEFICIARIO_CHAVE
+
     -- LEFT JOIN CTE_CID T8
     -- ON T1.COD_INTERNACIONAL_DOENCA = TRIM(upper(REPLACE(T8.CODIGO,".","")))
 
  WHERE T1.DAT_EXECUCAO >= '2017-01-01'
 --    AND T5.RNK = 1
-   AND T1.DAT_EXECUCAO <= DATE_TRUNC(DATE_SUB(CURRENT_DATE,INTERVAL 2 MONTH),MONTH)
+   AND T1.DAT_EXECUCAO <= DATE_TRUNC(DATE_SUB(CURRENT_DATE,INTERVAL 4 MONTH),MONTH)
 --    AND T1.COD_BENEFICIARIO_CHAVE = '7865700006400010'
 )--SELECT DISTINCT DSC_TIPO_INTERN FROM CTE_SIN_1
 ,CTE_SIN_2 AS (
 
-SELECT T1.COD_BENEFICIARIO 
+SELECT 
+       
+       T1.COD_BENEFICIARIO 
       ,T1.COD_BENEFICIARIO_CHAVE
       ,T1.NME_FANTASIA_PRESTADOR
       ,T1.VAL_SINISTRO
       ,T1.FLG_TIPO_SINISTRO
       ,T1.COD_PRESTADOR
       ,T1.DSC_ESPECIALIDADE
+      ,CASE
+          WHEN T1.COD_SERVICO IN (41101030,
+                                  41101014,
+                                  41101057,
+                                  41101545,
+                                  96003774,
+                                  96008199,
+                                  41101537,
+                                  36010456)
+          THEN 'RESSONANCIA'
+
+          WHEN T1.COD_SERVICO IN (41001443,
+                                  32010230,
+                                  41001010,
+                                  34010327,
+                                  41001370,
+                                  34010068,
+                                  34900098,
+                                  34010343,
+                                  41001389)
+          THEN 'TOMOGRAFIA'
+          ELSE '-'
+          END FLG_TOMO_RNM
+
+      ,CASE 
+          WHEN T1.DSC_ITEM_MAT_MED LIKE ('%LYSE%')
+          THEN 1 
+          ELSE 0 
+          END FLG_ACTILYSE
+      ,T1.COD_SERV_PRINCIPAL
       ,T1.COD_SERVICO
       ,T1.DSC_SERVICO_ABREV
       ,T1.DSC_SERVICO 
       ,T1.DSC_GRUPO_SERVICO
       ,T1.DSC_SUBGRUPO
+      ,T1.DSC_ITEM_MAT_MED
       ,T1.QTD_SERVICO
       ,T1.NME_GRP_ECON_PREST 
       ,T1.NME_MUNICIPIO 
@@ -162,17 +246,16 @@ SELECT T1.COD_BENEFICIARIO
   FROM CTE_SIN_1 T1      
 )
 
+,CTE_SIN_3 AS (
+  SELECT  
 
-SELECT  
 
-
-
-        T1.COD_BENEFICIARIO
-       ,VIDA.COD_APRESENTACAO_EMPRESA  
-       ,T1.COD_BENEFICIARIO_CHAVE
-       ,VIDA.DAT_NASCIMENTO
-       ,VIDA.DSC_SEXO
-       ,VIDA.DSC_CARTEIRA
+       T1.COD_BENEFICIARIO
+      ,VIDA.COD_APRESENTACAO_EMPRESA  
+      ,T1.COD_BENEFICIARIO_CHAVE
+      ,VIDA.DAT_NASCIMENTO
+      ,VIDA.DSC_SEXO
+      ,VIDA.DSC_CARTEIRA
        --,T2.NME_FANTASIA_PRESTADOR
       ,VIDA.COD_CARTEIRINHA_ORIGINAL
       ,VIDA.IDC_TIPO_PLANO 
@@ -181,11 +264,33 @@ SELECT
       ,T1.FLG_TIPO_SINISTRO
       ,T1.COD_PRESTADOR
       ,T1.DSC_ESPECIALIDADE
+      ,T1.COD_SERV_PRINCIPAL
       ,T1.COD_SERVICO
       ,T1.DSC_SERVICO_ABREV
       ,T1.DSC_SERVICO 
       ,T1.DSC_GRUPO_SERVICO
       ,T1.DSC_SUBGRUPO
+      ,T1.DSC_ITEM_MAT_MED
+      ,T1.FLG_TOMO_RNM
+      ,T1.FLG_ACTILYSE
+      -- ,CASE
+      --     WHEN (T1.COD_SERV_PRINCIPAL IN (9000003)
+      --     AND  (T1.FLG_TOMO_RNM IN ('RESSONANCIA') OR T1.FLG_TOMO_RNM IN ('TOMOGRAFIA')))
+      --     THEN 'MÉDIA'
+
+      --     WHEN (T1.COD_SERV_PRINCIPAL IN (9000003)
+      --     AND  (T1.FLG_TOMO_RNM IN ('RESSONANCIA') OR T1.FLG_TOMO_RNM IN ('TOMOGRAFIA'))
+      --     AND  T1.FLG_ACTILYSE IN (1))
+      --     THEN 'ALTA-ALTA'
+
+      --     WHEN T1.COD_SERV_PRINCIPAL IN (9000003)
+      --     AND  T1.FLG_ACTILYSE IN (1)
+      --     THEN 'ALTA'
+
+      --     ELSE '-'
+
+      --     END CLASSIFICACAO_NEURO
+
       ,T1.NME_GRP_ECON_PREST 
       ,T1.NME_MUNICIPIO 
       ,T1.SIG_UF      
@@ -197,27 +302,7 @@ SELECT
       ,T1.FLG_UTI
       ,T1.DSC_TIPO_SINISTRO 
       ,T1.DAT_EXECUCAO
-      ,CASE
-          WHEN T1.COD_SERVICO IN (41101030,
-                                  41101014,
-                                  41101057,
-                                  41101545,
-                                  96003774,
-                                  96008199,
-                                  41101537,
-                                  36010456)
-          THEN 'RESSONANCIA'
-
-          WHEN T1.COD_SERVICO IN (41001443,
-                                  32010230,
-                                  41001010,
-                                  34010327,
-                                  41001370,
-                                  34010068,
-                                  34900098,
-                                  34010343,
-                                  41001389)
-          THEN 'TOMOGRAFIA'
+      
       -- ,T1.CID
       -- ,T1.DSC_CID
       ,ROUND(CAST(SUM(VAL_SINISTRO) AS NUMERIC),2) AS VAL_SINISTRO
@@ -237,5 +322,59 @@ SELECT
 -- --  WHERE T1.COD_BENEFICIARIO_CHAVE = '7865700006400010'   
 
 
-   GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29)
+   GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33)
 --  --ORDER BY TRI
+,CTE_ACTILYSE AS (
+SELECT  DISTINCT 
+ COD_BENEFICIARIO_CHAVE
+,NUM_VPP
+,FLG_ACTILYSE
+
+FROM CTE_SIN_3
+
+WHERE FLG_ACTILYSE IN (1))
+
+-- , JUNÇÃO FLG_ACTILYSE COM SINISTRO
+
+,CTE_ACTILYSE_SIN AS (
+SELECT 
+
+ A.* EXCEPT(FLG_ACTILYSE)
+,CASE 
+      WHEN B.FLG_ACTILYSE IN (1)
+      THEN 'S'
+      ELSE 'N'
+
+      END FLG_ACTILYSE
+
+
+
+FROM CTE_SIN_3 A
+LEFT JOIN CTE_ACTILYSE B
+ON  A.COD_BENEFICIARIO_CHAVE = B.COD_BENEFICIARIO_CHAVE
+AND A.NUM_VPP = B.NUM_VPP)
+
+SELECT 
+
+*,
+CASE
+          WHEN COD_SERV_PRINCIPAL IN (9000003)
+          AND  (FLG_TOMO_RNM IN ('RESSONANCIA') OR FLG_TOMO_RNM IN ('TOMOGRAFIA'))
+          AND  FLG_ACTILYSE IN ('S')
+          THEN 'ALTA-ALTA'
+
+          WHEN COD_SERV_PRINCIPAL IN (9000003)
+          AND  (FLG_TOMO_RNM IN ('RESSONANCIA') OR FLG_TOMO_RNM IN ('TOMOGRAFIA'))
+          THEN 'MÉDIA'
+
+
+          WHEN COD_SERV_PRINCIPAL IN (9000003)
+          AND  FLG_ACTILYSE IN ('S')
+          THEN 'ALTA'
+
+          ELSE '-'
+
+          END CLASSIFICACAO_NEURO
+
+
+FROM CTE_ACTILYSE_SIN
