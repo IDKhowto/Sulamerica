@@ -55,8 +55,10 @@ with cyte_matmed as (
      A.COD_PRODUTO,
      A.DSC_PRODUTO,
      A.NME_FANTASIA_EMPRESA,
+     A.DSC_CARTEIRA_EMPRESA,
      A.COD_PLANO,
      A.NME_PLANO,
+     A.SGL_UF_TITULAR_BENEFICIARIO SIG_UF,
      A.COD_SISTEMICO_BENEFICIARIO,
      A.COD_ANALITICO_BENEFICIARIO,
      A.COD_CARTEIRINHA_BENEFICIARIO,
@@ -166,27 +168,33 @@ with cyte_matmed as (
      LEFT JOIN ACTILYSE B
      ON  A.COD_ANALITICO_BENEFICIARIO = B.COD_ANALITICO_BENEFICIARIO
      AND A.NUM_VPP = B.NUM_VPP)
-
+,cyte_fin as (
 SELECT
 
 *,
 CASE
           WHEN COD_PRINCIPAL_SERVICO IN (9000003)
-          AND  (FLG_RNM_TOMO IN ('RESSONANCIA') OR FLG_RNM_TOMO IN ('TOMOGRAFIA'))
-          THEN 'MÉDIA'
-
-          WHEN COD_PRINCIPAL_SERVICO IN (9000003)
-          AND  (FLG_RNM_TOMO IN ('RESSONANCIA') OR FLG_RNM_TOMO IN ('TOMOGRAFIA'))
+          AND  FLG_RNM_TOMO IN ('RESSONANCIA', 'TOMOGRAFIA') 
           AND  FLG_ACTILYSE IN ('S')
           THEN 'ALTA-ALTA'
-
+          
           WHEN COD_PRINCIPAL_SERVICO IN (9000003)
           AND  FLG_ACTILYSE IN ('S')
-          THEN 'ALTA'
-
+          AND FLG_RNM_TOMO NOT IN ('RESSONANCIA', 'TOMOGRAFIA')
+          THEN 'ALTA'          
+          
+          WHEN COD_PRINCIPAL_SERVICO IN (9000003)
+          AND  FLG_RNM_TOMO IN ('RESSONANCIA', 'TOMOGRAFIA')
+          THEN 'MÉDIA'
+          
+          
           ELSE '-'
 
           END CLASSIFICACAO_NEURO
 
 
-FROM cyte_actilyse_sin
+FROM cyte_actilyse_sin)
+
+select * from cyte_fin 
+where num_vpp in (select  distinct num_vpp from cyte_fin where classificacao_neuro not in ('-'))
+-- WHERE COD_CARTEIRINHA_BENEFICIARIO IN ('09001103339400014') group by 1
